@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:image" content="https://hackmd.io/favicon.png">
+<meta property="fb:app_id" content="1436904003272070">
+
+<meta name="realtime-register-serverurl" content="https://hackmd.io/realtime-reg">
+
+<meta name="csrf-token" content="yJpIS486-cuqJJIqS15_q7fyW50sZAYfHd2o">
+<title>YOLOv3 - TensorFlow - HackMD</title>
+<link rel="icon" type="image/png" href="https://hackmd.io/favicon.png">
+<link rel="apple-touch-icon" href="https://hackmd.io/apple-touch-icon.png">
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/cb=gapi.loaded_1" nonce="" async=""></script><script src="./YOLOv3 - TensorFlow - HackMD_files/cb=gapi(1).loaded_0" nonce="" async=""></script><script src="./YOLOv3 - TensorFlow - HackMD_files/rules-p-GpPtabXgUQ99B.js" async=""></script><script type="text/javascript" async="" src="./YOLOv3 - TensorFlow - HackMD_files/analytics.js" nonce=""></script><script type="text/javascript" async="" src="./YOLOv3 - TensorFlow - HackMD_files/quant.js" nonce=""></script><script async="" src="./YOLOv3 - TensorFlow - HackMD_files/gtm.js"></script><script nonce="">
+window.domain = 'hackmd.io'
+window.urlpath = ''
+window.debug = false
+window.version = '1.3.0'
+
+window.GOOGLE_API_KEY = 'AIzaSyCjSrqWHhmWJnoI7JlD88XDSaBgiKbaenA'
+window.GOOGLE_CLIENT_ID = '911617723593-drikdibvvn63slfd6kbqigo8ql1no55s.apps.googleusercontent.com'
+window.DROPBOX_APP_KEY = 'rdoizrlnkuha23r'
+window.IMGUR_CLIENT_ID = '300fb03bd363e5e'
+
+
+</script>
+
+
+
+<!-- Google Tag Manager -->
+<script nonce="">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KLW9Z3');</script>
+<!-- End Google Tag Manager -->
+
+
+
+<link rel="stylesheet" href="./YOLOv3 - TensorFlow - HackMD_files/emojify.min.css">
+
+<link href="./YOLOv3 - TensorFlow - HackMD_files/font-vendor.bee1279e958d023e6aa1fe33fa8b455c.css" rel="stylesheet">
+
+<link href="./YOLOv3 - TensorFlow - HackMD_files/common-vendor.e7b68a6f5d8bc61515095ad788365ef8.css" rel="stylesheet">
+
+<link href="./YOLOv3 - TensorFlow - HackMD_files/index-vendor.b2b6735a7e015d4ada3a68a2350d1345.css" rel="stylesheet">
+
+<link href="./YOLOv3 - TensorFlow - HackMD_files/index.264def60bfe237737e60281606c80a89.css" rel="stylesheet">
+
+
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha256-3Jy/GbSLrg0o9y5Z5n1uw0qxZECH7C6OQpVBgNFYa0g=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" integrity="sha256-g6iAfvZp+nDQ2TdTR/VVKJf3bGro4ub5fvWSWVRi2NE=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js" integrity="sha256-8E4Is26QH0bD52WoQpcB+R/tcWQtpzlCojrybUd7Mxo=" crossorigin="anonymous"></script>
+<![endif]-->
+
+
+<style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css"></style><style></style><style></style><style type="text/css">  @-webkit-keyframes rotate {
+    from  { -webkit-transform: rotate(0deg); }
+    to   { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes rotate {
+    from  { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+    .dropbox-dropin-btn, .dropbox-dropin-btn:link, .dropbox-dropin-btn:hover {
+      display: inline-block;
+      height: 14px;
+      font-family: "Lucida Grande", "Segoe UI", "Tahoma", "Helvetica Neue", "Helvetica", sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: #636363;
+      text-decoration: none;
+      padding: 1px 7px 5px 3px;
+      border: 1px solid #ebebeb;
+      border-radius: 2px;
+      border-bottom-color: #d4d4d4;
+        background: #fcfcfc;
+  background: -moz-linear-gradient(top, #fcfcfc 0%, #f5f5f5 100%);
+  background: -webkit-linear-gradient(top, #fcfcfc 0%, #f5f5f5 100%);
+  background: linear-gradient(to bottom, #fcfcfc 0%, #f5f5f5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fcfcfc', endColorstr='#f5f5f5',GradientType=0);  
+    }
+
+    .dropbox-dropin-default:hover, .dropbox-dropin-error:hover {
+      border-color: #dedede;
+      border-bottom-color: #cacaca;
+        background: #fdfdfd;
+  background: -moz-linear-gradient(top, #fdfdfd 0%, #f5f5f5 100%);
+  background: -webkit-linear-gradient(top, #fdfdfd 0%, #f5f5f5 100%);
+  background: linear-gradient(to bottom, #fdfdfd 0%, #f5f5f5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fdfdfd', endColorstr='#f5f5f5',GradientType=0);  
+    }
+
+    .dropbox-dropin-default:active, .dropbox-dropin-error:active {
+      border-color: #d1d1d1;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.1);
+    }
+
+    .dropbox-dropin-btn .dropin-btn-status {
+      display: inline-block;
+      width: 15px;
+      height: 14px;
+      vertical-align: bottom;
+      margin: 0 5px 0 2px;
+      background: transparent url('https://www.dropbox.com/static/images/widgets/dbx-saver-status.png') no-repeat;
+      position: relative;
+      top: 2px;
+    }
+
+    .dropbox-dropin-default .dropin-btn-status {
+      background-position: 0px 0px;
+    }
+
+    .dropbox-dropin-progress .dropin-btn-status {
+      width: 18px;
+      margin: 0 4px 0 0;
+      background: url('https://www.dropbox.com/static/images/widgets/dbx-progress.png') no-repeat center center;
+        -webkit-animation-name: rotate;
+        -webkit-animation-duration: 1.7s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+      animation-name: rotate;
+      animation-duration: 1.7s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+
+    .dropbox-dropin-success .dropin-btn-status {
+      background-position: -15px 0px;
+    }
+
+    .dropbox-dropin-disabled {
+      background: #e0e0e0;
+      border: 1px #dadada solid;
+      border-bottom: 1px solid #ccc;
+      box-shadow: none;
+    }
+
+    .dropbox-dropin-disabled .dropin-btn-status {
+      background-position: -30px 0px;
+    }
+
+    .dropbox-dropin-error .dropin-btn-status {
+      background-position: -45px 0px;
+    }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.4) {
+      .dropbox-dropin-btn .dropin-btn-status {
+        background-image: url('https://www.dropbox.com/static/images/widgets/dbx-saver-status-2x.png');
+        background-size: 60px 14px;
+          -webkit-background-size: 60px 14px;
+      }
+
+      .dropbox-dropin-progress .dropin-btn-status {
+        background: url('https://www.dropbox.com/static/images/widgets/dbx-progress-2x.png') no-repeat center center;
+        background-size: 20px 20px;
+          -webkit-background-size: 20px 20px;
+      }
+  }
+
+    .dropbox-saver:hover, .dropbox-chooser:hover {
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .dropbox-chooser, .dropbox-dropin-btn {
+      line-height: 11px !important;
+      text-decoration: none !important;
+      box-sizing: content-box !important;
+        -webkit-box-sizing: content-box !important;
+        -moz-box-sizing: content-box !important;
+    }
+    </style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover, .MJXp-munder {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > *, .MJXp-munder > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style>.picker-dialog-frame{width:100%;height:100%;border:0;overflow:hidden}.picker-dialog-bg{position:absolute;top:0;left:0;background-color:#fff;z-index:1000}.picker-dialog{position:absolute;top:0;left:0;background-color:#fff;border:1px solid #acacac;width:auto;padding:0;z-index:1001;overflow:auto;-moz-box-shadow:rgba(0,0,0,.2) 0 4px 16px;-webkit-box-shadow:rgba(0,0,0,.2) 0 4px 16px;box-shadow:rgba(0,0,0,.2) 0 4px 16px}.picker-dialog-content{font-size:0;padding:0}.picker-dialog-title,.picker-dialog-buttons{display:none} </style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax.MathJax_FullWidth {text-align: center; display: table-cell!important; width: 10000em!important}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none; box-sizing: content-box}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_test {font-style: normal; font-weight: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-transform: none; letter-spacing: normal; word-spacing: normal; overflow: hidden; height: 1px}
+.MathJax_test.mjx-test-display {display: table!important}
+.MathJax_test.mjx-test-inline {display: inline!important; margin-right: -1px}
+.MathJax_test.mjx-test-default {display: block!important; clear: both}
+.MathJax_ex_box {display: inline-block!important; position: absolute; overflow: hidden; min-height: 0; max-height: none; padding: 0; border: 0; margin: 0; width: 1px; height: 60ex}
+.MathJax_em_box {display: inline-block!important; position: absolute; overflow: hidden; min-height: 0; max-height: none; padding: 0; border: 0; margin: 0; width: 1px; height: 60em}
+.mjx-test-inline .MathJax_left_box {display: inline-block; width: 0; float: left}
+.mjx-test-inline .MathJax_right_box {display: inline-block; width: 0; float: right}
+.mjx-test-display .MathJax_right_box {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Blank; src: url('about:blank')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+<body style="background-color: white; padding-top: 51.9922px;"><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+    <nav class="navbar navbar-default navbar-fixed-top unselectable hidden-print">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        
+        <a class="navbar-brand pull-left" style="float: left;" href="https://hackmd.io/"><i class="fa fa-file-text"></i><span class="hidden-xs"> HackMD</span></a>
+        
+        <ul class="nav navbar-nav visible-xs pull-left">
+            
+            <li class="announcement-label-area" style="">
+                <a class="announcement-label btn ui-announcement-label" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" style="padding: 6px; padding-left: 26px;">
+                    <span class="label label-success">New!</span>
+                </a>
+                <div class="announcement-popover center" name="Batch_Download" style="display: none;">
+                    <div class="announcement-popover-header">
+                        <a class="caption" href="https://hackmd.io/c/news/" target="_blank">
+                            <span class="label label-success">New!</span>&nbsp;&nbsp;<span class="text">New Feature: batch download is now live!</span>
+                        </a>
+                    </div>
+                    <div class="announcement-popover-body">
+                        <img src="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q">
+                        You can now download all your notes at once! Please go to "Settings" where you will find a button to “Download all notes” next to “Backup”. 
+                    </div>
+                    <div class="announcement-popover-footer">
+                        <div class="text-right">
+                            <a class="btn btn-text ui-announcement-link" href="https://hackmd.io/c/news/" target="_blank">
+                                Check out the news here.</a>
+                            <a class="btn btn-text ui-announcement-close">Got it</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="announcement-backdrop"></div>
+            </li>
+            
+        </ul>
+        <ul class="nav-mobile pull-right">
+            <li>
+                <a class="btn btn-default ui-mode" style="width: 34px; padding: 6px;">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </li>
+            <li id="short-online-user-list">
+                <button class="ui-short-status btn btn-primary" data-toggle="dropdown"><i class="fa fa-users"></i> 1</button>
+                <ul class="dropdown-menu list" role="menu" aria-labelledby="menu"><li class="ui-user-item" style="border-left: 4px solid rgb(204, 45, 252);"><span class="id" style="display:none;">LOgujmiQBJyxweQtBKtt</span><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#"><span class="pull-left"><i class="ui-user-icon" style="background-image: url(&quot;https://lh3.googleusercontent.com/-839AC8sb-Eg/AAAAAAAAAAI/AAAAAAAAAA8/wL07LaZurhY/photo.jpg&quot;); margin-right: 6px; margin-left: -4px;"></i></span><span class="ui-user-name name">pollenJP.admin</span><span class="pull-right"><i class="fa fa-circle ui-user-status ui-user-status-online"></i></span></a></li></ul>
+            </li>
+        </ul>
+        <ul class="nav-mobile pull-right" style="margin: 0px;">
+            <li>
+                <a class="btn-link side-menu-button">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-form navbar-left" style="padding:0;">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default ui-edit" style="padding: 6px 9px;" title="編集モード (Ctrl+Alt+E)">
+                    <input type="radio" name="mode" autocomplete="off"><i class="fa fa-pencil fa-fw"></i>
+                </label>
+                <label class="btn btn-default ui-both" style="padding: 6px 9px;" title="分割モード (Ctrl+Alt+B)">
+                    <input type="radio" name="mode" autocomplete="off"><i class="fa fa-columns fa-fw"></i>
+                </label>
+                <label class="btn btn-default ui-view active" style="padding: 6px 9px;" title="表示モード (Ctrl+Alt+V)">
+                    <input type="radio" name="mode" autocomplete="off"><i class="fa fa-eye fa-fw"></i>
+                </label>
+            </div>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-left" style="margin-left: 15px;">
+            
+            <li title="" data-toggle="tooltip" data-placement="bottom" data-container=".navbar-default" data-offset="0,5" data-original-title="新規ノート">
+                <a class="ui-menu navbar-button-icon" href="https://hackmd.io/new" target="_blank">
+                    <i class="fa fa-plus fa-18"></i>
+                </a>
+            </li>
+            
+            <li title="" data-toggle="tooltip" data-placement="bottom" data-container=".navbar-default" data-offset="0,5" data-original-title="Help">
+                <a class="ui-help navbar-button-icon" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" data-toggle="modal" data-target=".help-modal">
+                    <i class="fa fa-question fa-20"></i>
+                </a>
+            </li>
+            
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
+            
+            <li class="announcement-area hidden-xs" style="">
+                <a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" style="padding: 14px 0;">
+                    <div class="caption inverse">
+                        <span class="label label-success">New!</span><span class="hidden-sm">&nbsp;&nbsp;</span><span class="text visible-lg">New Feature: batch download is now live!</span>
+                    </div>
+                </a>
+                <div class="announcement-popover" name="Batch_Download" style="display: none;">
+                    <div class="announcement-popover-header" style="padding-bottom: 15px;">
+                        <a class="caption" href="https://hackmd.io/c/news/" target="_blank">
+                            <span class="label label-success">New!</span>&nbsp;&nbsp;<span class="text">New Feature: batch download is now live!</span>
+                        </a>
+                    </div>
+                    <div class="announcement-popover-body">
+                        <img src="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q">
+                        You can now download all your notes at once! Please go to "Settings" where you will find a button to “Download all notes” next to “Backup”. 
+                    </div>
+                    <div class="announcement-popover-footer">
+                        <div class="text-right">
+                            <a class="btn btn-text ui-announcement-link" href="https://hackmd.io/c/news/" target="_blank">
+                                Check out the news here.</a>
+                            <a class="btn btn-text ui-announcement-close">Got it</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            
+                <li title="" data-toggle="tooltip" data-placement="bottom" data-offset="0,5" data-original-title="pollenJP.admin">
+                    <a class="ui-profile-label" data-toggle="dropdown">
+                        <img class="ui-avatar" width="30" height="30" src="./YOLOv3 - TensorFlow - HackMD_files/photo.jpg">
+                    </a>
+                    <ul id="profile-dropdown" class="dropdown-menu" aria-labelledby="profileLabel">
+                        
+                            <li><a href="https://hackmd.io/profile" target="_blank"><i class="fa fa-user-circle-o fa-fw"></i> Profile</a></li>
+                        
+                        <li><a href="https://hackmd.io/settings" target="_blank"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
+                        <li>
+                            <a href="https://hackmd.io/logout" class="ui-signout"><i class="fa fa-sign-out fa-fw"></i> Sign out</a>
+                        </li>
+                    </ul>
+                </li>
+            
+            <li id="online-user-list">
+                <button class="ui-status btn btn-primary" data-toggle="dropdown"><i class="fa fa-users"></i> 1 ONLINE</button>
+                <ul class="dropdown-menu list" role="menu" aria-labelledby="menu" style="right: 15px;width: 200px;"><li class="ui-user-item" style="border-left: 4px solid rgb(204, 45, 252);"><span class="id" style="display:none;">LOgujmiQBJyxweQtBKtt</span><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#"><span class="pull-left"><i class="ui-user-icon" style="background-image: url(&quot;https://lh3.googleusercontent.com/-839AC8sb-Eg/AAAAAAAAAAI/AAAAAAAAAA8/wL07LaZurhY/photo.jpg&quot;); margin-right: 6px; margin-left: -4px;"></i></span><span class="ui-user-name name">pollenJP.admin</span><span class="pull-right"><i class="fa fa-circle ui-user-status ui-user-status-online"></i></span></a></li></ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right" style="padding:0;">
+            <li title="" data-toggle="tooltip" data-placement="bottom" data-container=".navbar-default" data-offset="0,5" data-original-title="メニュー">
+                <a class="ui-menu navbar-button-icon" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-h fa-18"></i>
+                </a>
+                <ul class="dropdown-menu list" role="menu" aria-labelledby="menu">
+                    <li class="dropdown-header">
+                        その他
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-extra-revision" tabindex="-1" data-toggle="modal" data-target="#revisionModal"><i class="fa fa-history fa-fw"></i>
+                        Revisions</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-extra-slide" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/slide" target="_blank"><i class="fa fa-tv fa-fw"></i>
+                        スライドモード</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-extra-book" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/book" target="_blank"><i class="fa fa-book fa-fw"></i>
+                        Book Mode</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">
+                        Export
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-save-dropbox" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-dropbox fa-fw"></i>
+                        Dropbox</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-save-google-drive" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-cloud-upload fa-fw"></i>
+                        Google Drive</a>
+                    </li>
+                    
+                    <li role="presentation"><a role="menuitem" class="ui-save-gist" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/gist" target="_blank"><i class="fa fa-github fa-fw"></i>
+                        Gist</a>
+                    </li>
+                    
+                    
+                    <li class="divider"></li>
+                    <li class="dropdown-header">
+                        Import
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-import-dropbox" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-dropbox fa-fw"></i>
+                        Dropbox</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-import-google-drive" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-cloud-download fa-fw"></i>
+                        Google Drive</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-import-gist" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" data-toggle="modal" data-target="#gistImportModal"><i class="fa fa-github fa-fw"></i>
+                        Gist</a>
+                    </li>
+                    
+                    <li role="presentation"><a role="menuitem" class="ui-import-clipboard" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" data-toggle="modal" data-target="#clipboardModal"><i class="fa fa-clipboard fa-fw"></i>
+                        クリップボード</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">
+                        Download
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-download-markdown" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_blank"><i class="fa fa-file-text fa-fw"></i>
+                        Markdown</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-download-html" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_blank"><i class="fa fa-file-code-o fa-fw"></i>
+                        HTML</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-download-raw-html" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_blank"><i class="fa fa-file-code-o fa-fw"></i>
+                        HTMLパーツ</a>
+                    </li>
+                    <li role="presentation"><a role="menuitem" class="ui-download-odf-beta" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/odf" target="_blank" download=""><i class="fa fa-file-text-o fa-fw"></i>
+                        ODF (Beta)</a>
+                    </li>
+                    
+                </ul>
+            </li>
+            <li title="" data-toggle="tooltip" data-placement="bottom" data-offset="0,5" data-original-title="Permission">
+                <a class="ui-permission navbar-button-icon" data-toggle="dropdown">
+                    <i class="fa fa-unlock-alt fa-18"></i>
+                </a>
+                <ul class="dropdown-menu list" role="menu" aria-labelledby="menu" style="width: 308px;" id="permission-dropdown">
+                    <li class="dropdown-header" style="margin-bottom: 7px;">
+                        Note Permission
+                        <i class="fa fa-question-circle fa-12 tooltip-align-left" style="color: #CDCDCD" title="" data-toggle="tooltip" data-placement="bottom" data-offset="0,5" data-original-title="Note owner decides who can read or write this note."></i>
+                    </li>
+                    <li role="presentation" style="margin-bottom: 10px;">
+                        <div style="display: flex; padding: 0 20px;">
+                            <span style="flex: 1;">
+                                <div style="display: table; width: 100%; height: 100%;">
+                                    <div style="display: table-cell; vertical-align: middle;">
+                                        Read
+                                    </div>
+                                </div>
+                            </span>
+                            
+                            <div class="btn-group btn-group-note-permission permission-popover-btn-group" data-toggle="buttons" name="read">
+                                <label class="btn btn-default active" name="owner">
+                                    <input type="radio" name="mode" autocomplete="off" value="1" class="ui-read-owner">
+                                    Owner
+                                </label>
+                                <label class="btn btn-default" name="signed-in" style="margin-left: -1px;">
+                                    <input type="radio" name="mode" autocomplete="off" value="2" class="ui-read-signedin">
+                                    Signed-in
+                                </label>
+                                <label class="btn btn-default" name="guest" style="margin-left: -1px;">
+                                    <input type="radio" name="mode" autocomplete="off" value="3" class="ui-read-guest">
+                                    Guest
+                                </label>
+                            </div>
+                            <div class="permission-item-badge permission-item-readonly" style="display: none;" name="read">
+                                <span name="owner" style="">Owner</span>
+                                <span name="signed-in" style="display: none;">Signed-in</span>
+                                <span name="guest" style="display: none;">Guest</span>
+                            </div>
+                            
+                        </div>
+                    </li>
+                    <li role="presentation" style="margin-bottom: 20px;">
+                        <div style="display: flex; padding: 0 20px;">
+                            <span style="flex: 1;">
+                                <div style="display: table; width: 100%; height: 100%;">
+                                    <div style="display: table-cell; vertical-align: middle;">
+                                        Write
+                                    </div>
+                                </div>
+                            </span>
+                            <div class="btn-group btn-group-note-permission permission-popover-btn-group" data-toggle="buttons" name="write">
+                                <label class="btn btn-default active" name="owner">
+                                    <input type="radio" name="mode" autocomplete="off" value="1" class="ui-write-owner">
+                                    Owner
+                                </label>
+                                <label class="btn btn-default disabled" name="signed-in" style="margin-left: -1px;">
+                                    <input type="radio" name="mode" autocomplete="off" value="2" class="ui-write-signedin">
+                                    Signed-in
+                                </label>
+                                <label class="btn btn-default disabled" name="guest" style="margin-left: -1px;">
+                                    <input type="radio" name="mode" autocomplete="off" value="3" class="ui-write-guest">
+                                    Guest
+                                </label>
+                            </div>
+                            <div class="permission-item-badge permission-item-readonly" style="display: none;" name="write">
+                                <span name="owner" style="">Owner</span>
+                                <span name="signed-in" style="display: none;">Signed-in</span>
+                                <span name="guest" style="display: none;">Guest</span>
+                            </div>
+                        </div>
+                    </li>
+                    
+                    
+                    <li class="divider ui-bottom-divider" style="margin-top: 16.5px;"></li>
+                    <li class="ui-transfer-note"><a><i class="fa fa-exchange fa-fw"></i> Transfer ownership</a></li>
+                    <li class="ui-delete-note"><a><i class="fa fa-trash fa-fw"></i> Delete this note</a></li>
+                </ul>
+            </li>
+            <li title="" data-toggle="tooltip" data-placement="bottom" data-offset="0,5" data-original-title="公開する">
+                <a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/publish" target="_blank" class="ui-publish navbar-button-icon">
+                    <i class="fa fa-share-alt fa-18"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="sidenav main-sidenav" style="display: none;">
+        
+        <a class="sidenav-item sidenav-trigger ui-profile-menu dark-border" sidenav-target="sidenav-profile">
+            <img class="ui-avatar" width="22" height="22" style="border-radius: 100%; margin-right: 6px;" src="./YOLOv3 - TensorFlow - HackMD_files/photo.jpg">
+            <span>
+                pollenJP.admin
+            </span>
+            <i class="fa fa-angle-right fa-fw"></i>
+        </a>
+        
+        <a class="sidenav-item sidenav-trigger ui-menu-mobile" sidenav-target="sidenav-menu" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#"><i class="fa fa-ellipsis-h fa-fw"></i>
+            <span>
+                メニュー
+            </span>
+            <i class="fa fa-angle-right fa-fw"></i>
+        </a>
+        <a class="sidenav-item sidenav-trigger ui-options-mobile" sidenav-target="sidenav-permission" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#"><i class="fa fa-unlock-alt fa-fw"></i>
+            <span>
+                Options
+            </span>
+            <i class="fa fa-angle-right fa-fw"></i>
+        </a>
+        <a class="sidenav-item ui-publish dark-border" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/publish" target="_blank"><i class="fa fa-share-alt fa-fw"></i>
+            <span>
+                公開する
+            </span>
+        </a>
+        
+        <a class="sidenav-item ui-new" tabindex="-1" href="https://hackmd.io/new" target="_blank"><i class="fa fa-plus fa-fw"></i>
+            <span>
+                新規ノート
+            </span>
+        </a>
+        
+        <a class="sidenav-item ui-help dark-border" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" data-toggle="modal" data-target=".help-modal"><i class="fa fa-question fa-fw"></i>
+            <span>
+                    ヘルプ
+            </span>
+        </a>
+    </div>
+    <div class="sidenav sidenav-menu" style="display: none;">
+        <a class="sidenav-item sidenav-back ui-menu-back" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">
+            <i class="fa fa-angle-left fa-fw" style="width:auto"></i>
+            <i class="fa fa-ellipsis-h fa-fw" style="margin-left: 15px; margin-right: 6px;"></i>
+            メニュー
+        </a>
+        <div class="divider-header">その他</div>
+        <a class="sidenav-item ui-extra-revision" tabindex="-1" data-toggle="modal" data-target="#revisionModal"><i class="fa fa-history fa-fw"></i>
+            <span>Revisions</span></a>
+        <a class="sidenav-item ui-extra-slide" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/slide" target="_blank"><i class="fa fa-tv fa-fw"></i>
+            <span>スライドモード</span></a>
+        <a class="sidenav-item ui-extra-book" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/book" target="_blank"><i class="fa fa-book fa-fw"></i>
+            <span>Book Mode</span></a>
+        <div class="divider-header">Export</div>
+        <a class="sidenav-item ui-save-dropbox" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-dropbox fa-fw"></i><span>Dropbox</span></a>
+        <a class="sidenav-item ui-save-google-drive" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-cloud-upload fa-fw"></i><span>Google Drive</span></a>
+        
+            <a class="sidenav-item ui-save-gist" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/gist" target="_blank"><i class="fa fa-github fa-fw"></i><span>Gist</span></a>
+        
+        
+        <div class="divider-header">Import</div>
+        <a class="sidenav-item ui-import-dropbox" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-dropbox fa-fw"></i><span>Dropbox</span></a>
+        <a class="sidenav-item ui-import-google-drive" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_self"><i class="fa fa-cloud-download fa-fw"></i><span>Google Drive</span></a>
+        <a class="sidenav-item ui-import-gist" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" data-toggle="modal" data-target="#gistImportModal"><i class="fa fa-github fa-fw"></i><span>Gist</span></a>
+        
+        <a class="sidenav-item ui-import-clipboard" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" data-toggle="modal" data-target="#clipboardModal"><i class="fa fa-clipboard fa-fw"></i><span> クリップボード</span></a>
+        <div class="divider-header">Download</div>
+        <a class="sidenav-item ui-download-markdown" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_blank"><i class="fa fa-file-text fa-fw"></i><span>Markdown</span></a>
+        <a class="sidenav-item ui-download-html" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_blank"><i class="fa fa-file-code-o fa-fw"></i><span>HTML</span></a>
+        <a class="sidenav-item ui-download-raw-html" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" target="_blank"><i class="fa fa-file-code-o fa-fw"></i><span> HTMLパーツ</span></a>
+        <a class="sidenav-item ui-download-odf-beta" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q/odf" target="_blank" download=""><i class="fa fa-file-text-o fa-fw"></i><span>ODF (Beta)</span></a>
+        
+    </div>
+    <div class="sidenav sidenav-profile" style="display: none;">
+        
+            <a class="sidenav-item sidenav-back ui-profile-menu-back-mobile dark-border">
+                <i class="fa fa-angle-left fa-fw" style="width: auto;"></i>
+                <img class="ui-avatar" width="22" height="22" style="border-radius: 100%; margin-right: 6px; margin-left: 15px;" src="./YOLOv3 - TensorFlow - HackMD_files/photo.jpg">
+                pollenJP.admin
+            </a>
+            
+                <a href="https://hackmd.io/profile" target="_blank" class="sidenav-item ui-profile-mobile"><i class="fa fa-user-circle-o fa-fw"></i><span>Profile</span></a>
+            
+            <a href="https://hackmd.io/settings" target="_blank" class="sidenav-item ui-settings-mobile"><i class="fa fa-gear fa-fw"></i><span>Settings</span></a>
+            <a href="https://hackmd.io/logout" class="sidenav-item ui-signout"><i class="fa fa-sign-out fa-fw"></i><span>Sign out</span></a>
+        
+    </div>
+
+    <div class="sidenav full sidenav-permission" style="display: none;">
+        <a class="sidenav-item sidenav-back ui-options-back" tabindex="-1" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">
+            <i class="fa fa-angle-left fa-fw" style="width: auto;"></i>
+            <i class="fa fa-unlock-alt fa-fw" style="margin-left:15px; margin-right: 6px;"></i>
+            Options
+        </a>
+        <div style="margin-top: 17.5px; margin-bottom: 10px; margin-left: 17px; font-size: 12px; color: #888888">
+            Note Permission
+            <i class="fa fa-question-circle fa-12 tooltip-align-left" style="color: #CDCDCD" title="" data-toggle="tooltip" data-placement="bottom" data-offset="0,5" data-original-title="Note owner decides who can read or write this note."></i>
+        </div>
+        <div class="note-permission-item ui-note-permission-read-mobile">
+            <div style="display: flex;">
+                <span style="flex: 1;">
+                    <div style="display: table; width: 100%; height: 100%;">
+                        <div style="display: table-cell; vertical-align: middle;">
+                            Read
+                        </div>
+                    </div>
+                </span>
+                
+                <div class="btn-group btn-group-note-permission permission-popover-btn-group" data-toggle="buttons" name="read">
+                    <label class="btn btn-default active" name="owner">
+                        <input type="radio" name="mode" autocomplete="off" value="1" class="ui-read-owner">
+                        Owner
+                    </label>
+                    <label class="btn btn-default" name="signed-in" style="margin-left: -1px;">
+                        <input type="radio" name="mode" autocomplete="off" value="2" class="ui-read-signedin">
+                        Signed-in
+                    </label>
+                    <label class="btn btn-default" name="guest" style="margin-left: -1px;">
+                        <input type="radio" name="mode" autocomplete="off" value="3" class="ui-read-guest">
+                        Guest
+                    </label>
+                </div>
+                <div class="permission-item-badge permission-item-readonly" style="display: none;" name="read">
+                    <span name="owner" style="">Owner</span>
+                    <span name="signed-in" style="display: none;">Signed-in</span>
+                    <span name="guest" style="display: none;">Guest</span>
+                </div>
+                
+            </div>
+        </div>
+        <div class="note-permission-item ui-note-permission-write-mobile">
+            <div style="display: flex;">
+                <span style="flex: 1;">
+                    <div style="display: table; width: 100%; height: 100%;">
+                        <div style="display: table-cell; vertical-align: middle;">
+                            Write
+                        </div>
+                    </div>
+                </span>
+                <div class="btn-group btn-group-note-permission permission-popover-btn-group" data-toggle="buttons" name="write">
+                    <label class="btn btn-default active" name="owner">
+                        <input type="radio" name="mode" autocomplete="off" value="1" class="ui-write-owner">
+                        Owner
+                    </label>
+                    <label class="btn btn-default disabled" name="signed-in" style="margin-left: -1px;">
+                        <input type="radio" name="mode" autocomplete="off" value="2" class="ui-write-signedin">
+                        Signed-in
+                    </label>
+                    <label class="btn btn-default disabled" name="guest" style="margin-left: -1px;">
+                        <input type="radio" name="mode" autocomplete="off" value="3" class="ui-write-guest">
+                        Guest
+                    </label>
+                </div>
+                <div class="permission-item-badge permission-item-readonly" style="display: none;" name="write">
+                    <span name="owner" style="">Owner</span>
+                    <span name="signed-in" style="display: none;">Signed-in</span>
+                    <span name="guest" style="display: none;">Guest</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ui-bottom-divider" style="border-bottom: #e5e5e5 1px solid; margin-top: 16.5px;"></div>
+        <div class="sidenav-item ui-transfer-note" style="padding-left: 15px; padding-bottom: 6px; border-bottom: none;"><a><i class="fa fa-exchange fa-fw"></i> Transfer ownership</a></div>
+        <div class="sidenav-item ui-delete-note" style="padding-left: 15px; padding-top: 0px; padding-bottom: 0px; border-bottom: none;"><a><i class="fa fa-trash fa-fw"></i> Delete this note</a></div>
+    </div>
+    <div class="modal-backdrop dim ui-more-menu-back-mobile" style="display: none; margin-top: 51px;"></div>
+</nav>
+<div class="ui-spinner unselectable hidden-print" style="display: none;"><div class="spinner" role="progressbar" style="position: absolute; width: 0px; z-index: 2000000000; left: 50%; top: 50%;"><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-0-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(0deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-1-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(32deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-2-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(65deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-3-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(98deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-4-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(130deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-5-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(163deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-6-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(196deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-7-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(229deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-8-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(261deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-9-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(294deg) translate(30px, 0px); border-radius: 0px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-10-11 0.909091s linear 0s infinite normal none running;"><div style="position: absolute; width: 22px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center; transform: rotate(327deg) translate(30px, 0px); border-radius: 0px;"></div></div></div></div>
+
+    <div class="row ui-content" style="">
+    <div id="comment-app"><div style="display: none;"><div class="ui-comment-container"><div class="ui-comment-header"><div><i class="fa fa-level-down comment-navigator" aria-hidden="true"></i><span>Comments</span></div><i class="fa fa-times ui-comment-close" aria-hidden="true"></i></div><div class="ui-comments-container"><div class="comment-blank-stats"><img src="./YOLOv3 - TensorFlow - HackMD_files/comment-dots_light.svg"><div>No comment.</div></div></div><div class="ui-comment-input-container"><div class="avatar" style="background-image: url(&quot;https://lh3.googleusercontent.com/-839AC8sb-Eg/AAAAAAAAAAI/AAAAAAAAAA8/wL07LaZurhY/photo.jpg&quot;);"></div><div class="ui-comment-input-widgets"><textarea placeholder="Type your message..."></textarea><div class="action-buttons"><button class="btn btn-primary">Send</button><button class="btn btn-default">Cancel</button></div></div></div></div></div></div>
+    <div class="ui-edit-area unselectable ui-resizable" style="display: none;">
+        <textarea id="textit" style="display: none;"></textarea><div class="CodeMirror cm-s-one-dark CodeMirror-wrap CodeMirror-overlayscroll" style="height: 1112.5px;"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 3.98438px; left: 62.9688px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-overlayscroll-horizontal" cm-not-content="true" style="display: none;"><div></div></div><div class="CodeMirror-overlayscroll-vertical" cm-not-content="true" style="display: block; bottom: 0px;"><div style="height: 10px; top: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" style="height: 1112.5px;"><div class="CodeMirror-sizer" style="margin-left: 0px; padding-right: 10px; padding-bottom: 0px; margin-bottom: 0px; border-right-width: 30px; min-height: 2265px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation" style="padding-bottom: 1090.5px;"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 3.98438px; top: 0px; height: 21.25px;">&nbsp;</div></div><div class="cursor-menu"></div><div class="CodeMirror-other-cursors"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -58.9844px; width: 59px;"></div><div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-yaml cm-header cm-header-6">#</span><span class="cm-m-markdown cm-header cm-header-6">##### tags: </span><span class="cm-m-markdown cm-comment cm-header cm-header-6">`YOLOv3`</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-header cm-header-1"># YOLOv3 - TensorFlow</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-link">[TensorFlowでの実装]</span><span class="cm-m-markdown cm-string cm-url">(https://github.com/maiminh1996/YOLOv3-tensorflow)</span><span class="cm-m-markdown">で良さそうなものがあったのでその実装を理解し動かすところから始める.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-variable-2">- 学習済みデータの変換</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-variable-2">- </span><span class="cm-m-markdown cm-link cm-variable-2">[YunYang1994/tensorflow-yolov3: pure tensorflow Implement of YOLOv3 with support to train your own dataset]</span><span class="cm-m-markdown cm-string cm-url cm-variable-2">(https://github.com/YunYang1994/tensorflow-yolov3)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-header cm-header-2">## ネットワーク構成</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown">YOLOv3のネットワーク構成がわかりやすく載っていた. (日本語訳もあり)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-link">https://www.cyberailab.com/home/a-closer-look-at-yolov3</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-image cm-image-marker">!</span><span class="cm-m-markdown cm-image cm-image-alt-text cm-link">[]</span><span class="cm-m-markdown cm-string cm-url">(https://i.imgur.com/nQsSeyI.png)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown">途中の出力を取り出すことで物体のサイズに合わせた検出を行なっている.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-image cm-image-marker">!</span><span class="cm-m-markdown cm-image cm-image-alt-text cm-link">[]</span><span class="cm-m-markdown cm-string cm-url">(https://i.imgur.com/RmJNGKR.png)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-header cm-header-2">## TensorFlowによるYOLOv3</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-link">https://github.com/maiminh1996/YOLOv3-tensorflow</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">26</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown">YOLOv3をTensorFlowで実装されたコードを見て読み解いていたところ,上に示した構造と異なっている箇所を発見してしまった (以下)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">27</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-link">https://github.com/maiminh1996/YOLOv3-tensorflow</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">28</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">29</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown">scale1とscale2を繋ぐ箇所に違いがみられる. 最初の図ではscale2から</span><span class="cm-m-markdown cm-comment">`upsample`</span><span class="cm-m-markdown">を介してscale1に矢印が伸び, scale1の Detection Result にまで達している. 一方, ２番目の図ではupsample_1にでの矢印が scale1 から scale2 に伸びている.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">30</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">31</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">32</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">33</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-m-markdown cm-header cm-header-2">## 実装手順</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -58.9844px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 30px;">34</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div></div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; border-bottom: 0px solid transparent; top: 2265px;"></div><div class="CodeMirror-gutters" style="left: 0px; height: 2295px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 37px;"></div><div class="CodeMirror-gutter authorship-gutters"></div><div class="CodeMirror-gutter CodeMirror-foldgutter"></div></div></div></div>
+    <div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; display: none;"><button class="btn btn-lg btn-default ui-sync-toggle" title="Toggle sync scrolling" data-i18n="[title]editor.toggle-sync-scrolling" style="display: none;"><i class="fa fa-link fa-fw"></i></button></div></div>
+    <div class="ui-view-area">
+        <div class="ui-infobar container-fluid unselectable hidden-print">
+            <small class="pull-left">
+                <span>
+                    <span class="ui-lastchangeuser" style=""> <i class="ui-user-icon small" data-toggle="tooltip" data-placement="right" data-original-title="pollenJP.admin" title="" style="background-image:url(https://lh3.googleusercontent.com/-839AC8sb-Eg/AAAAAAAAAAI/AAAAAAAAAA8/wL07LaZurhY/photo.jpg)"></i></span>
+                    <span class="ui-no-lastchangeuser" style="display: none;"> <i class="fa fa-clock-o fa-fw" style="width: 18px;"></i></span>
+                    &nbsp;<span class="text-uppercase ui-status-lastchange">changed</span>
+                    <span class="ui-lastchange text-uppercase" title="2019年3月5日 11:27 火曜日">13時間前</span>
+                </span>
+                <br class="visible-xs">
+                <span class="ui-owner" style="display: none;">
+                     <i class="ui-user-icon small" data-toggle="tooltip" data-placement="right" data-original-title="pollenJP.admin" title="" style="background-image:url(https://lh3.googleusercontent.com/-839AC8sb-Eg/AAAAAAAAAAI/AAAAAAAAAA8/wL07LaZurhY/photo.jpg)"></i>
+                    &nbsp;<span class="text-uppercase">owned this note</span>
+                </span>
+                <span class="ui-owner-team" style="display: none;">
+                     <i class="ui-user-icon small" data-toggle="tooltip" data-placement="right" data-original-title="" title=""></i>
+                    &nbsp;<span class="text-uppercase">owned this note</span>
+                </span>
+            </small>
+            <span class="pull-right">
+                
+                <span class="ui-notification dropdown pull-right" style="">
+                    <a id="notificationLabel" class="btn btn-default ui-notification-label" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Be notified of any changes">
+                        <span><span class="icon"><i class="fa fa-bell fa-fw"></i></span> <span class="text">Watch <i class="fa fa-caret-down pull-right" style="margin-top: 3px;"></i></span></span>
+                        </a>
+                    <ul class="dropdown-menu" aria-labelledby="notificationLabel">
+                        <li class="ui-notification-watch"><a><i class="fa fa-bell fa-fw"></i> Watch - Be notified of any changes</a></li>
+                        <li class="ui-notification-never"><a><i class="fa fa-bell-slash fa-fw"></i> Never - Never be notified</a></li>
+                    </ul>
+                </span>
+                
+                
+            </span>
+        </div>
+        <div id="doc" class="markdown-body container-fluid comment-enabled"><h6 class="part" data-startline="1" data-endline="1" id="tags-YOLOv3"><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#tags-YOLOv3" title="tags-YOLOv3" smoothhashscroll=""><span class="octicon octicon-link"></span></a>tags: <code>YOLOv3</code></h6><h1 class="part" data-startline="3" data-endline="3" id="YOLOv3---TensorFlow" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#YOLOv3---TensorFlow" title="YOLOv3---TensorFlow" smoothhashscroll=""><span class="octicon octicon-link"></span></a>YOLOv3 - TensorFlow</h1><p class="part" data-startline="5" data-endline="5"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">TensorFlowでの実装</a>で良さそうなものがあったのでその実装を理解し動かすところから始める.</p><ul class="part" data-startline="7" data-endline="9">
+<li class="" data-startline="7" data-endline="7">学習済みデータの変換</li>
+<li class="" data-startline="8" data-endline="9"><a href="https://github.com/YunYang1994/tensorflow-yolov3" target="_blank" rel="noopener">YunYang1994/tensorflow-yolov3: pure tensorflow Implement of YOLOv3 with support to train your own dataset</a></li>
+</ul><h2 class="part" data-startline="10" data-endline="10" id="ネットワーク構成" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E6%A7%8B%E6%88%90" title="ネットワーク構成" smoothhashscroll=""><span class="octicon octicon-link"></span></a>ネットワーク構成</h2><p class="part" data-startline="12" data-endline="13">YOLOv3のネットワーク構成がわかりやすく載っていた. (日本語訳もあり)<br>
+<a href="https://www.cyberailab.com/home/a-closer-look-at-yolov3" target="_blank" rel="noopener">https://www.cyberailab.com/home/a-closer-look-at-yolov3</a></p><p class="part" data-startline="15" data-endline="15"><img src="./YOLOv3 - TensorFlow - HackMD_files/nQsSeyI.png" alt="" class=""></p><p class="part" data-startline="17" data-endline="17">途中の出力を取り出すことで物体のサイズに合わせた検出を行なっている.</p><p class="part" data-startline="19" data-endline="19"><img src="./YOLOv3 - TensorFlow - HackMD_files/RmJNGKR.png" alt="" class=""></p><h2 class="part" data-startline="22" data-endline="22" id="TensorFlowによるYOLOv3" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#TensorFlow%E3%81%AB%E3%82%88%E3%82%8BYOLOv3" title="TensorFlowによるYOLOv3" smoothhashscroll=""><span class="octicon octicon-link"></span></a>TensorFlowによるYOLOv3</h2><p class="part" data-startline="24" data-endline="24"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">https://github.com/maiminh1996/YOLOv3-tensorflow</a></p><p class="part" data-startline="26" data-endline="27">YOLOv3をTensorFlowで実装されたコードを見て読み解いていたところ,上に示した構造と異なっている箇所を発見してしまった (以下)<br>
+<a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">https://github.com/maiminh1996/YOLOv3-tensorflow</a></p><p class="part" data-startline="29" data-endline="29">scale1とscale2を繋ぐ箇所に違いがみられる. 最初の図ではscale2から<code>upsample</code>を介してscale1に矢印が伸び, scale1の Detection Result にまで達している. 一方, ２番目の図ではupsample_1にでの矢印が scale1 から scale2 に伸びている.</p><h2 class="part" data-startline="33" data-endline="33" id="実装手順" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E5%AE%9F%E8%A3%85%E6%89%8B%E9%A0%86" title="実装手順" smoothhashscroll=""><span class="octicon octicon-link"></span></a>実装手順</h2><ul class="part" data-startline="35" data-endline="36">
+<li class="" data-startline="35" data-endline="36"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">https://github.com/maiminh1996/YOLOv3-tensorflow</a> からクローンしてくる</li>
+</ul><pre class="part" data-startline="37" data-endline="39"><code>git clone https://github.com/maiminh1996/YOLOv3-tensorflow.git
+</code></pre><ul class="part" data-startline="41" data-endline="42">
+<li class="" data-startline="41" data-endline="42">コードの中でパス指定が変数かされていない箇所があったためクローンしてきたディレクトリ名を<code>yolo3</code>に変更し,設定の内容も変える.</li>
+</ul><pre class="part" data-startline="43" data-endline="46"><code>mv YOLOv3-tensorflow yolo3
+vim yolo3/config.py
+</code></pre><pre class="part" data-startline="48" data-endline="50"><code>path = '/home/minh/PycharmProjects'
+</code></pre><p class="part" data-startline="52" data-endline="52">の箇所を</p><pre class="part" data-startline="54" data-endline="56"><code>path = '..'
+</code></pre><p class="part" data-startline="58" data-endline="58">に変更</p><ul class="part" data-startline="60" data-endline="61">
+<li class="" data-startline="60" data-endline="61">公式から重みをダウンロードする. (公式のサイトにも載ってる)</li>
+</ul><pre class="part" data-startline="62" data-endline="64"><code>wget https://pjreddie.com/media/files/yolov3.weights
+</code></pre><ul class="part" data-startline="66" data-endline="69">
+<li class="" data-startline="66" data-endline="69">重みを<code>.h5</code>の形式に変換
+<ul>
+<li class="" data-startline="67" data-endline="67">なぜか説明がなかったが他のレポジトリの変換を利用した</li>
+<li class="" data-startline="68" data-endline="69"><a href="https://github.com/qqwweee/keras-yolo3" target="_blank" rel="noopener">https://github.com/qqwweee/keras-yolo3</a></li>
+</ul>
+</li>
+</ul><pre class="part" data-startline="70" data-endline="76"><code>git clone https://github.com/qqwweee/keras-yolo3.git
+cd keras-yolo3
+python3 convert.py yolov3.cfg yolov3.weights yolov3.h5
+cp yolo.h5 ../yolo3/model/
+cd ..
+</code></pre><ul class="part" data-startline="78" data-endline="79">
+<li class="" data-startline="78" data-endline="79">サンプル写真が欲しいので公式のgithubレポジトリをクローン</li>
+</ul><pre class="part" data-startline="80" data-endline="82"><code>git clone https://github.com/pjreddie/darknet
+</code></pre><ul class="part" data-startline="84" data-endline="87">
+<li class="" data-startline="84" data-endline="87">推論の実行
+<ul>
+<li class="" data-startline="85" data-endline="85"><code>Entrer a check point at epoch :</code>と聞かれたら適当な数字を入力した (例:5</li>
+<li class="" data-startline="86" data-endline="87"><code>Input image filename:</code>と聞かれるので写真のパスを指定する(例：<code>/../darknet/data/dog.jpg</code>). 最初は<code>/</code>で始めるが絶対パスでなくてもよい.</li>
+</ul>
+</li>
+</ul><pre class="part" data-startline="88" data-endline="117"><code> % python3 propagation.py image COCO output.png
+-----------COCO-----------
+YOLOv3, let's go!!!!!!!
+Finir de charger les poids!
+2019-01-08 11:05:47.232451: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2019-01-08 11:05:47.695029: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties:
+name: Tesla V100-SXM2-32GB major: 7 minor: 0 memoryClockRate(GHz): 1.53
+pciBusID: 0000:1f:00.0
+totalMemory: 31.74GiB freeMemory: 29.47GiB
+2019-01-08 11:05:47.695114: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-01-08 11:05:48.237945: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-01-08 11:05:48.238027: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0
+2019-01-08 11:05:48.238042: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N
+2019-01-08 11:05:48.238746: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 28585 MB memory) -&gt; physical GPU (device: 0, name: Tesla V100-SXM2-32GB, pci bus id: 0000:1f:00.0, compute capability: 7.0)
+Entrer a check point at epoch:5
+Not yet training!
+Input image filename:/../darknet/data/dog.jpg
+heights, widths: [576 768]
+Found 3 boxes for img
+dog 0.99 (128, 225) (314, 537)
+truck 0.92 (475, 85) (689, 170)
+bicycle 0.99 (162, 119) (565, 441)
+Input image filename:^CTraceback (most recent call last):
+  File "propagation.py", line 300, in &lt;module&gt;
+    detect_img(YOLO(), output)
+  File "propagation.py", line 281, in detect_img
+    img = input('Input image filename:')
+KeyboardInterrupt
+</code></pre><p class="part" data-startline="119" data-endline="119"><img src="./YOLOv3 - TensorFlow - HackMD_files/YJydlFo.png" alt="" class=""></p><h2 class="part" data-startline="122" data-endline="122" id="コードの構造" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E6%A7%8B%E9%80%A0" title="コードの構造" smoothhashscroll=""><span class="octicon octicon-link"></span></a>コードの構造</h2><ul class="part" data-startline="124" data-endline="149">
+<li class="" data-startline="124" data-endline="126"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/propagation.py#L74-L80" target="_blank" rel="noopener">Generate colors for drawing bounding boxes</a>
+<ul>
+<li class="" data-startline="125" data-endline="125"><strong>HSV(Hue Saturation Value:色相,彩度,明度)色体系</strong> のうち,Hueの値 ( <span class="mathjax"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-1-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;mo&gt;&amp;#x223C;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-1" style="width: 2.718em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.205em; height: 0px; font-size: 122%;"><span style="position: absolute; clip: rect(1.693em, 1002.1em, 2.666em, -999.997em); top: -2.508em; left: 0em;"><span class="mrow" id="MathJax-Span-2"><span class="mn" id="MathJax-Span-3" style="font-family: STIXGeneral;">0</span><span class="mo" id="MathJax-Span-4" style="font-family: STIXGeneral; padding-left: 0.31em;">∼</span><span class="mn" id="MathJax-Span-5" style="font-family: STIXGeneral; padding-left: 0.31em;">1</span></span><span style="display: inline-block; width: 0px; height: 2.513em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.941em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn><mo>∼</mo><mn>1</mn></math></span></span><script type="math/tex" id="MathJax-Element-1">0 \sim 1</script></span> ) のみクラス数で等分割する(他は1.0).</li>
+<li class="" data-startline="126" data-endline="126"><a href="https://docs.python.jp/3/library/colorsys.html" target="_blank" rel="noopener">22.6. colorsys — 色体系間の変換 — Python 3.6.5 ドキュメント</a></li>
+</ul>
+</li>
+<li class="" data-startline="127" data-endline="127"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/propagation.py#L83-L84" target="_blank" rel="noopener">placeholder作成</a></li>
+<li class="" data-startline="128" data-endline="149"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/propagation.py#L90-L91" target="_blank" rel="noopener">YOLOv3().feature_extractor()</a>
+<ul>
+<li class="" data-startline="129" data-endline="129">network_function.py</li>
+<li class="" data-startline="130" data-endline="149"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L10" target="_blank" rel="noopener">class YOLOv3(object)</a>
+<ul>
+<li class="" data-startline="131" data-endline="137"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L29" target="_blank" rel="noopener">feature_extractor(self)</a>
+<ul>
+<li class="" data-startline="132" data-endline="132">以下の二つ<code>Features</code>,<code>SCALSE</code>から成る</li>
+<li class="" data-startline="133" data-endline="133"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L35-L138" target="_blank" rel="noopener">with tf.name_scope(“Features”):</a></li>
+<li class="" data-startline="134" data-endline="137"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L140" target="_blank" rel="noopener">tf.name_scope(‘SCALE’)</a>
+<ul>
+<li class="" data-startline="135" data-endline="135"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L141-L150" target="_blank" rel="noopener">tf.name_scope(‘scale_1’):</a></li>
+<li class="" data-startline="136" data-endline="136"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L151-L164" target="_blank" rel="noopener">tf.name_scope(‘scale_2’):</a></li>
+<li class="" data-startline="137" data-endline="137"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L165-L180" target="_blank" rel="noopener">tf.name_scope(‘scale_3’):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="" data-startline="138" data-endline="149"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L184-L283" target="_blank" rel="noopener">conv2d</a>
+<ul>
+<li class="" data-startline="139" data-endline="139"><code>feature_extractor</code>内部で使われている関数</li>
+<li class="" data-startline="140" data-endline="140">もし独自のデータを扱いたいとき(fine-tuning)は出力部分をクラス数に応じて変化させる必要が有るためif文で場合分けしている.</li>
+<li class="" data-startline="141" data-endline="143"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L226" target="_blank" rel="noopener">学習済み重みを使う際には<code>W()</code>関数で抽出している</a>
+<ul>
+<li class="" data-startline="142" data-endline="142">charger_poids.py</li>
+<li class="" data-startline="143" data-endline="143"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/master/charger_poids.py#L6-L13" target="_blank" rel="noopener">W(number_conv)</a> (h5から抽出)</li>
+</ul>
+</li>
+<li class="" data-startline="144" data-endline="149"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L253-L265" target="_blank" rel="noopener">batch_normalizationを行うための情報の取得 <code>B()</code></a> + <a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/67681c9f118872ba3cc111a743323eb53ea15d12/network_function.py#L280" target="_blank" rel="noopener"><span class="mathjax"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-2-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03B1;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-6" style="width: 0.669em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.515em; height: 0px; font-size: 122%;"><span style="position: absolute; clip: rect(1.898em, 1000.51em, 2.666em, -999.997em); top: -2.508em; left: 0em;"><span class="mrow" id="MathJax-Span-7"><span class="mi" id="MathJax-Span-8" style="font-family: STIXGeneral; font-style: italic;">𝛼<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span></span><span style="display: inline-block; width: 0px; height: 2.513em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.691em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>α</mi></math></span></span><script type="math/tex" id="MathJax-Element-2">\alpha</script></span></a>
+<ul>
+<li class="" data-startline="145" data-endline="149"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow/blob/master/charger_poids.py#L16-L46" target="_blank" rel="noopener">B(number_conv)</a> (h5から抽出)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><h2 class="part" data-startline="150" data-endline="150" id="改良したいポイント" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E6%94%B9%E8%89%AF%E3%81%97%E3%81%9F%E3%81%84%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88" title="改良したいポイント" smoothhashscroll=""><span class="octicon octicon-link"></span></a>改良したいポイント</h2><h2 class="part" data-startline="153" data-endline="153" id="ふと思ったこと" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%81%B5%E3%81%A8%E6%80%9D%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" title="ふと思ったこと" smoothhashscroll=""><span class="octicon octicon-link"></span></a>ふと思ったこと</h2><ul class="part" data-startline="155" data-endline="157">
+<li class="" data-startline="155" data-endline="157">リアルタイムで実行する際に複数GPUをうまく活用できないか
+<ul>
+<li class="" data-startline="156" data-endline="157">連続した４フレームを順に4つのGPUに投げ,順に出力結果を回収すればフレームレートをあげられそうだなぁ</li>
+</ul>
+</li>
+</ul><h2 class="part" data-startline="158" data-endline="158" id="Reference" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#Reference" title="Reference" smoothhashscroll=""><span class="octicon octicon-link"></span></a>Reference</h2><ul class="part" data-startline="159" data-endline="170">
+<li class="" data-startline="159" data-endline="159"><a href="https://arxiv.org/abs/1804.02767" target="_blank" rel="noopener">[1804.02767] YOLOv3: An Incremental Improvement</a></li>
+<li class="" data-startline="160" data-endline="160"><a href="https://pjreddie.com/darknet/yolo/" target="_blank" rel="noopener">YOLO: Real-Time Object Detection</a></li>
+<li class="" data-startline="161" data-endline="161"><a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b" target="_blank" rel="noopener">What’s new in YOLO v3? – Towards Data Science</a></li>
+<li class="" data-startline="162" data-endline="162"><a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">maiminh1996/YOLOv3-tensorflow: Implement YOLOv3 with TensorFlow</a></li>
+<li class="" data-startline="163" data-endline="163"><a href="https://www.cyberailab.com/home/a-closer-look-at-yolov3" target="_blank" rel="noopener">A Closer Look at YOLOv3</a></li>
+<li class="" data-startline="164" data-endline="164"><a href="https://qiita.com/cyberailab/items/850806c08af08853bac8" target="_blank" rel="noopener">A Closer Look at YOLOv3 - Qiita</a></li>
+<li class="" data-startline="165" data-endline="165"><a href="https://github.com/YunYang1994/tensorflow-yolov3" target="_blank" rel="noopener">YunYang1994/tensorflow-yolov3: Pure tensorflow Implement of YOLOv3 with support to train your own dataset</a></li>
+<li class="" data-startline="166" data-endline="166"><a href="https://qiita.com/yoyoyo_/items/10d550b03b4b9c175d9c" target="_blank" rel="noopener">KerasのYOLO-v3を動かしたった - Qiita</a></li>
+<li class="" data-startline="167" data-endline="170"><a href="https://github.com/qqwweee/keras-yolo3" target="_blank" rel="noopener">qqwweee/keras-yolo3: A Keras implementation of YOLOv3 (Tensorflow backend)</a></li>
+</ul><h2 class="part" data-startline="171" data-endline="171" id="YunYang1994tensorflow-yolov3" style=""><a class="anchor hidden-xs" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#YunYang1994tensorflow-yolov3" title="YunYang1994tensorflow-yolov3" smoothhashscroll=""><span class="octicon octicon-link"></span></a>YunYang1994/tensorflow-yolov3</h2><ul class="part" data-startline="173" data-endline="174">
+<li class="" data-startline="173" data-endline="174"><a href="https://github.com/YunYang1994/tensorflow-yolov3" target="_blank" rel="noopener">YunYang1994/tensorflow-yolov3: pure tensorflow Implement of YOLOv3 with support to train your own dataset</a></li>
+</ul><pre class="part" data-startline="175" data-endline="178"><code>pip3 install --upgrade pip
+pip3 install numpy Pillow scipy tensorflow wget seaborn
+</code></pre><pre class="part" data-startline="180" data-endline="182"><code>python3 convert_weight.py --convert --freeze
+</code></pre></div>
+        <div class="ui-toc dropup unselectable hidden-print scrollspy-view" style="display: none; right: 722.766px;">
+            <div class="pull-right dropdown">
+                <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel"><div class="toc"><ul class="nav">
+<li class="active"><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#YOLOv3---TensorFlow" title="YOLOv3 - TensorFlow" smoothhashscroll="">YOLOv3 - TensorFlow</a><ul class="nav">
+<li class="active"><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E6%A7%8B%E6%88%90" title="ネットワーク構成" smoothhashscroll="">ネットワーク構成</a></li>
+<li class=""><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#TensorFlow%E3%81%AB%E3%82%88%E3%82%8BYOLOv3" title="TensorFlowによるYOLOv3" smoothhashscroll="">TensorFlowによるYOLOv3</a></li>
+<li class=""><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E5%AE%9F%E8%A3%85%E6%89%8B%E9%A0%86" title="実装手順" smoothhashscroll="">実装手順</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E6%A7%8B%E9%80%A0" title="コードの構造" smoothhashscroll="">コードの構造</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E6%94%B9%E8%89%AF%E3%81%97%E3%81%9F%E3%81%84%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88" title="改良したいポイント" smoothhashscroll="">改良したいポイント</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%81%B5%E3%81%A8%E6%80%9D%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" title="ふと思ったこと" smoothhashscroll="">ふと思ったこと</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#Reference" title="Reference" smoothhashscroll="">Reference</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#YunYang1994tensorflow-yolov3" title="YunYang1994/tensorflow-yolov3" smoothhashscroll="">YunYang1994/tensorflow-yolov3</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">Expand all</a><a class="back-to-top" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">Back to top</a><a class="go-to-bottom" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">Go to bottom</a></div></ul>
+            </div>
+        </div>
+        <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print scrollspy-body affix" data-spy="affix" style="top: 51px; left: 1545.23px; width: 722.256px;"><div class="toc"><ul class="nav">
+<li class="active"><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#YOLOv3---TensorFlow" title="YOLOv3 - TensorFlow" smoothhashscroll="">YOLOv3 - TensorFlow</a><ul class="nav">
+<li class="active"><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E6%A7%8B%E6%88%90" title="ネットワーク構成" smoothhashscroll="">ネットワーク構成</a></li>
+<li class=""><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#TensorFlow%E3%81%AB%E3%82%88%E3%82%8BYOLOv3" title="TensorFlowによるYOLOv3" smoothhashscroll="">TensorFlowによるYOLOv3</a></li>
+<li class=""><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E5%AE%9F%E8%A3%85%E6%89%8B%E9%A0%86" title="実装手順" smoothhashscroll="">実装手順</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E6%A7%8B%E9%80%A0" title="コードの構造" smoothhashscroll="">コードの構造</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E6%94%B9%E8%89%AF%E3%81%97%E3%81%9F%E3%81%84%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88" title="改良したいポイント" smoothhashscroll="">改良したいポイント</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#%E3%81%B5%E3%81%A8%E6%80%9D%E3%81%A3%E3%81%9F%E3%81%93%E3%81%A8" title="ふと思ったこと" smoothhashscroll="">ふと思ったこと</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#Reference" title="Reference" smoothhashscroll="">Reference</a></li>
+<li><a href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#YunYang1994tensorflow-yolov3" title="YunYang1994/tensorflow-yolov3" smoothhashscroll="">YunYang1994/tensorflow-yolov3</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">Expand all</a><a class="back-to-top" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">Back to top</a><a class="go-to-bottom" href="https://hackmd.io/zbi9QaUGQFK-L5braqfT1Q#">Go to bottom</a></div></div>
+    <div class="comment-buttons-container" style=""><div class="ui-comment-button empty" data-startline="1" data-startoffset="0"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="3" data-startoffset="23"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="5" data-startoffset="46"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="7" data-startoffset="148"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="10" data-startoffset="322"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="12" data-startoffset="335"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="15" data-startoffset="431"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="17" data-startoffset="469"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="19" data-startoffset="505" style="transform: translateY(1036px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="22" data-startoffset="544"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="24" data-startoffset="568" style="transform: translateY(993px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="26" data-startoffset="618" style="transform: translateY(1033px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="29" data-startoffset="739" style="transform: translateY(1120px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="33" data-startoffset="900"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="35" data-startoffset="909"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="37" data-startoffset="972" style="transform: translateY(1308px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="41" data-startoffset="1044" style="transform: translateY(1924px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="43" data-startoffset="1114" style="transform: translateY(1988px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="48" data-startoffset="1170"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="52" data-startoffset="1215"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="54" data-startoffset="1221" style="transform: translateY(2179px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="58" data-startoffset="1242" style="transform: translateY(2246px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="60" data-startoffset="1247"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="62" data-startoffset="1282" style="transform: translateY(2325px); left: 1456px;"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="66" data-startoffset="1344"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="70" data-startoffset="1436"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="78" data-startoffset="1601"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="80" data-startoffset="1636"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="84" data-startoffset="1691"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="88" data-startoffset="1863"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="119" data-startoffset="3655"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="122" data-startoffset="3694"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="124" data-startoffset="3705"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="150" data-startoffset="6521"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="153" data-startoffset="6536"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="155" data-startoffset="6548"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="158" data-startoffset="6637"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="159" data-startoffset="6650"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="171" data-startoffset="7594"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="173" data-startoffset="7628"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="175" data-startoffset="7789"><i class="fa fa-comment-o" aria-hidden="true"></i> </div><div class="ui-comment-button empty" data-startline="180" data-startoffset="7881"><i class="fa fa-comment-o" aria-hidden="true"></i> </div></div></div>
+</div>
+<!-- clipboard modal -->
+<div class="modal fade" id="clipboardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">クリップボードからインポート</h4>
+            </div>
+            <div class="modal-body">
+                <div contenteditable="" data-ph="Markdownまたはウェブページを貼り付けてください" id="clipboardModalContent" style="overflow:auto;max-height:50vh"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-danger" id="clipboardModalClear">クリア</button>
+                <button type="button" class="btn btn-primary" id="clipboardModalConfirm">インポート</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- locked modal -->
+<div class="modal fade locked-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-lock"></i> このノートはロックされています</h4>
+            </div>
+            <div class="modal-body" style="color:black;">
+                <h5>このノートはオーナーのみが編集できます</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- limit modal -->
+<div class="modal fade limit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> 上限に達しました</h4>
+            </div>
+            <div class="modal-body" style="color:black;">
+                <h5>ノートの文字数が上限に達しました。</h5>
+                <strong>内容を減らすか、別のノートに分けてください</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- message modal -->
+<div class="modal fade message-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div class="modal-body" style="color:black;">
+                <h5></h5>
+                <a target="_blank" style="word-break: break-all;" rel="noopener"></a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- gist import modal -->
+<div class="modal fade" id="gistImportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">gistからインポート</h4>
+            </div>
+            <div class="modal-body">
+                <input type="url" class="form-control" placeholder="gistのURLを貼り付けてください (like: https://gist.github.com/username/gistid)" id="gistImportModalContent">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-danger" id="gistImportModalClear">Clear</button>
+                <button type="button" class="btn btn-primary" id="gistImportModalConfirm">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- snippet import modal -->
+<div class="modal fade" id="snippetImportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">スニペットからインポート</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="snippetImportModalAccessToken">
+                <input type="hidden" id="snippetImportModalBaseURL">
+                <div class="ui-field-contain" style="display:table;margin-bottom:10px;width:100%;">
+                    <div style="display:table-row;margin-bottom:5px;">
+                        <label style="display:table-cell;">スニペットからインポート</label>
+                        <select class="form-control" id="snippetImportModalProjects" style="display:table-cell;" disabled="disabled">
+                            <option value="init" selected="selected" disabled="disabled">プロジェクトを一覧から選択してください</option>
+                        </select>
+                    </div>
+                    <div style="display:table-row;">
+                        <label style="display:table-cell;">スニペットからインポート</label>
+                        <select class="form-control" id="snippetImportModalSnippets" style="display:table-cell;" disabled="disabled">
+                            <option value="init" selected="selected" disabled="disabled">スニペットを一覧から選択してください</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="snippet-import-or">または</p>
+                <input type="url" class="form-control" placeholder="/projects/:id/snippets/:snippet_id" id="snippetImportModalContent" disabled="disabled">
+            </div>
+            <div class="modal-footer">
+                <span id="snippetImportModalLoading"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-danger" id="snippetImportModalClear">Clear</button>
+                <button type="button" class="btn btn-primary" id="snippetImportModalConfirm" disabled="disabled">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- snippet export modal -->
+<div class="modal fade" id="snippetExportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">スニペットにエクスポート</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="snippetExportModalAccessToken">
+                <input type="hidden" id="snippetExportModalBaseURL">
+                <div class="ui-field-contain" style="display:table;margin-bottom:10px;width:100%;">
+                    <div style="display:table-row;margin-bottom:5px;">
+                        <label style="display:table-cell;">Title:</label>
+                        <input class="form-control" placeholder="new snippet" type="text" id="snippetExportModalTitle">
+                    </div>
+                    <div style="display:table-row;margin-bottom:5px;">
+                        <label style="display:table-cell;">File Name:</label>
+                        <input class="form-control" placeholder="new_snippet.md" type="text" id="snippetExportModalFileName">
+                    </div>
+                    <div style="display:table-row;margin-bottom:5px;">
+                        <label style="display:table-cell;">Project:</label>
+                        <select class="form-control" id="snippetExportModalProjects" style="display:table-cell;">
+                            <option value="init" selected="selected" disabled="disabled">Select From Available Projects</option>
+                        </select>
+                    </div>
+                    <div style="display:table-row;margin-bottom:5px;">
+                        <label style="display:table-cell;">Visibility:</label>
+                        <select class="form-control" id="snippetExportModalVisibility" style="display:table-cell;">
+                            <option value="" selected="selected" disabled="disabled">公開範囲を選んでください</option>
+                            <option value="0">Private</option>
+                            <option value="10">Internal</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="snippetExportModalLoading"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-primary" id="snippetExportModalConfirm">エクスポート</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- delete modal -->
+<div class="modal fade delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">本当にいいですか？</h4>
+            </div>
+            <div class="modal-body" style="color:black;">
+                <h5 class="ui-delete-modal-msg">Do you really want to delete this note?</h5>
+                <strong class="ui-delete-modal-item">All users will lost their connection.</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-danger ui-delete-modal-confirm">はい</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- transfer modal -->
+<div class="modal fade transfer-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Transfer ownership</h4>
+            </div>
+            <div class="modal-body text-center" style="color:black;">
+                <div class="dropdown btn-group ui-transfer-modal-team-dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuTransferToTeam" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="ui-transfer-modal-team-label">Transfer to team you've joined</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuTransferToTeam"></ul>
+                </div>
+                <div class="ui-transfer-modal-or" style="padding: 5px 0;"><strong>または</strong></div>
+                <div class="dropdown btn-group ui-transfer-modal-team-member-dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuTransferToTeamMember" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="ui-transfer-modal-team-member-label">Transfer to current team member</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuTransferToTeamMember"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-danger ui-transfer-modal-confirm" disabled="">Transfer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- refresh modal -->
+<div class="modal fade" id="refreshModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">ページをリロードしてください</h4>
+            </div>
+            <div class="modal-body">
+                <div class="incompatible-version">
+                    <h5>クライアントのバージョンが一致しません</h5>
+                    <strong>リロードして更新を反映させてください</strong>
+                </div>
+                <div class="new-version" style="display:none;">
+                    <h5>新しいバージョンが利用できます！</h5>
+                    <a href="https://hackmd.io/s/release-notes" target="_blank">リリースノートをごらんください</a>
+                    <br>
+                    <strong>リロードして新しい機能を試してみましょう</strong>
+                </div>
+                <div class="user-state-changed" style="display:none;">
+                    <h5>ユーザー情報が変更されました</h5>
+                    <strong>リロードすると最新のユーザー情報が反映されます</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                
+                <a class="btn btn-danger" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=KDGS4PREHX6QQ&amp;lc=US&amp;item_name=HackMD&amp;amount=5%2e00&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted" target="_blank"><i class="fa fa-coffee"></i> Buy us coffee</a>
+                
+                <button type="button" class="btn btn-primary" id="refreshModalRefresh">リロード</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- signin modal -->
+<div class="modal fade signin-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: 10px; right: 20px; position: absolute;"><span aria-hidden="true">×</span></button>
+            
+
+
+
+
+
+
+    
+
+
+
+<h3>Sign in</h3>
+
+
+
+
+
+    
+
+    
+        <p>By clicking below, you agree to our <a href="https://hackmd.io/s/terms" target="_blank">terms of service.</a></p>
+    
+
+    <div class="social-buttons-container">
+    
+    <a href="https://hackmd.io/auth/facebook" class="btn btn-lg btn-block btn-social btn-facebook">
+        <i class="fa fa-facebook"></i> Facebookでサインイン
+    </a>
+    
+    
+    <a href="https://hackmd.io/auth/twitter" class="btn btn-lg btn-block btn-social btn-twitter">
+        <i class="fa fa-twitter"></i> Twitterでサインイン
+    </a>
+    
+    
+    <a href="https://hackmd.io/auth/github" class="btn btn-lg btn-block btn-social btn-github">
+        <i class="fa fa-github"></i> GitHubでサインイン
+    </a>
+    
+    
+    <a href="https://hackmd.io/auth/dropbox" class="btn btn-lg btn-block btn-social btn-dropbox">
+        <i class="fa fa-dropbox"></i> Dropboxでサインイン
+    </a>
+    
+    
+    <a href="https://hackmd.io/auth/google" class="btn btn-lg btn-block btn-social btn-google">
+        <i class="icon icon-google"></i> Googleでサインイン
+    </a>
+    
+    
+</div>
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<!-- help modal -->
+<div class="modal fade help-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="mySmallModalLabel"><i class="fa fa-question-circle"></i> ヘルプ</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-3">
+                        
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">コンタクト</h3>
+                            </div>
+                            <div class="panel-body">
+                                <a href="https://www.messenger.com/t/hackmdio" target="_blank"><i class="fa fa-comments fa-fw"></i> Talk to us</a>
+                                <br>
+                                <a href="https://github.com/hackmdio/hackmd-io-issues/issues" target="_blank"><i class="fa fa-tag fa-fw"></i> 問題を報告する</a>
+                                <br>
+                                <a href="mailto:hackmdio@gmail.com"><i class="fa fa-envelope fa-fw"></i> メールを送る</a>
+                                <br>
+                                <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=KDGS4PREHX6QQ&amp;lc=US&amp;item_name=HackMD&amp;amount=5%2e00&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted" target="_blank"><i class="fa fa-coffee fa-fw"></i> Buy us coffee</a>
+                            </div>
+                        </div>
+                        
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">ドキュメント</h3>
+                            </div>
+                            <div class="panel-body">
+                                <a href="https://hackmd.io/features" title="Features" target="_blank"><i class="fa fa-dot-circle-o fa-fw"></i> 機能</a>
+                                <br>
+                                <a href="https://hackmd.io/yaml-metadata" title="YAML Metadata" target="_blank"><i class="fa fa-dot-circle-o fa-fw"></i> YAMLメタデータ</a>
+                                <br>
+                                <a href="https://hackmd.io/slide-example" title="Slide Example" target="_blank"><i class="fa fa-dot-circle-o fa-fw"></i> スライドサンプル</a>
+                                <br>
+                                <a href="https://hackmd.io/book-example" title="Book Example" target="_blank"><i class="fa fa-dot-circle-o fa-fw"></i> Book Example</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">チートシート</h3>
+                            </div>
+                            <div class="panel-body" style="height: calc(100vh - 215px); overflow: auto;">
+                                <table class="table table-condensed table-cheatsheet">
+                                    <thead>
+                                        <tr>
+                                            <th>例</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="markdown-body" style="font-family: inherit; font-size: 14px; padding: 0; max-width: inherit;">
+                                        <tr>
+                                            <td>Header</td>
+                                            <td># Header</td>
+                                        </tr>
+                                        <tr>
+                                            <td><ul><li>番号なしリスト</li></ul></td>
+                                            <td>- 番号なしリスト</td>
+                                        </tr>
+                                        <tr>
+                                            <td><ol><li>番号付きリスト</li></ol></td>
+                                            <td>1. 番号付きリスト</td>
+                                        </tr>
+                                        <tr>
+                                            <td><ul><li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""><label></label>TODOリスト</li></ul></td>
+                                            <td>- [ ] TODOリスト</td>
+                                        </tr>
+                                        <tr>
+                                            <td><blockquote> 引用文</blockquote></td>
+                                            <td>&gt; 引用文</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>太字</strong></td>
+                                            <td>**太字**</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i>斜体</i></td>
+                                            <td>*斜体*</td>
+                                        </tr>
+                                        <tr>
+                                            <td><s>打ち消し線</s></td>
+                                            <td>~~打ち消し線~~</td>
+                                        </tr>
+                                        <tr>
+                                            <td>19<sup>th</sup></td>
+                                            <td>19^th^</td>
+                                        </tr>
+                                        <tr>
+                                            <td>H<sub>2</sub>O</td>
+                                            <td>H~2~O</td>
+                                        </tr>
+                                        <tr>
+                                            <td><ins>挿入文</ins></td>
+                                            <td>++挿入文++</td>
+                                        </tr>
+                                        <tr>
+                                            <td><mark>マーカー</mark></td>
+                                            <td>==マーカー==</td>
+                                        </tr>
+                                        <tr>
+                                            <td><a>リンク</a></td>
+                                            <td>[link text](https:// "title")</td>
+                                        </tr>
+                                        <tr>
+                                            <td>画像</td>
+                                            <td>![image alt](https:// "title")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>コード</code></td>
+                                            <td>`コード`</td>
+                                        </tr>
+                                        <tr>
+                                            <td><pre style="border:none !important;"><code class="javascript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span></div><div class="code"><span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>;
+</div></div></code></pre></td>
+                                            <td>```javascript<br>var i = 0;<br>```</td>
+                                        </tr>
+                                        <tr>
+                                            <td><img align="absmiddle" alt=":smile:" class="emoji" src="./YOLOv3 - TensorFlow - HackMD_files/smile.png" title=":smile:"></td>
+                                            <td>:smile:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>モジュール</td>
+                                            <td>{%youtube youtube_id %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>L<sup>a</sup>T<sub>e</sub>X</td>
+                                            <td>$L^aT_eX$</td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="alert alert-info"><p>これはアラートエリアです</p></div></td>
+                                            <td>:::info<br>これはアラートエリアです<br>:::</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    table.table-cheatsheet tr > td:nth-child(2) {
+        font-family: "Source Code Pro", Consolas, monaco, monospace;
+        letter-spacing: 0.025em;
+        line-height: 1.25;
+    }
+</style>
+
+<!-- revision modal -->
+<div class="modal fade" id="revisionModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width: calc(100vw - 20px); max-width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="mySmallModalLabel"><i class="fa fa-history"></i> Revisions</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4" style="max-height: calc(100vh - 215px); overflow: auto;">
+                        <div class="list-group ui-revision-list"></div>
+                    </div>
+                    <div class="col-sm-8" style="height: calc(100vh - 215px); overflow: hidden;">
+                        <textarea id="revisionViewer" style="display:none;"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-primary" id="revisionModalDownload">ダウンロード</button>
+                <button type="button" class="btn btn-danger" id="revisionModalRevert">戻す</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
+    
+<script async="" src="./YOLOv3 - TensorFlow - HackMD_files/js"></script>
+<script nonce="">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    let userid = (document.cookie.match('(^|; )userid=([^;]*)')||0)[2];
+    gtag('config', 'UA-60728495-1', {'user_id': userid});
+</script>
+<script src="./YOLOv3 - TensorFlow - HackMD_files/bundle.min.js" crossorigin="anonymous"></script>
+<script nonce="">Sentry.init({ dsn: 'https://b1ed86878f414ccc832dc0f63ffe2daa@sentry.io/121416', integrations: function (intrus) { return intrus.filter(function (itr) { return itr.name !== 'TryCatch' }) } });</script>
+
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLW9Z3"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/i18n.js"></script>
+<script src="./YOLOv3 - TensorFlow - HackMD_files/mathjax-config-extra.js"></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/MathJax.js" defer=""></script>
+<script src="./YOLOv3 - TensorFlow - HackMD_files/TeX-AMS-MML_HTMLorMML.js" defer=""></script>
+<script src="./YOLOv3 - TensorFlow - HackMD_files/Safe.js" defer=""></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/manifest.ca5d10c816fbad70eef1.js" defer=""></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/font-vendor.48475f10e84220a91d17.js" defer=""></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/common-vendor.32047ff98f707bfe408a.js" defer=""></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/index-vendor.29982713c5f1e6156d30.js" defer=""></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/index-common.7fb9b1a55b10c0cc37d4.js" defer=""></script>
+
+<script src="./YOLOv3 - TensorFlow - HackMD_files/index.fbcb89e2ee63d0258f1c.js" defer=""></script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="./YOLOv3 - TensorFlow - HackMD_files/dropins.js" id="dropboxjs" data-app-key="rdoizrlnkuha23r" async="" defer=""></script><script type="text/javascript" src="./YOLOv3 - TensorFlow - HackMD_files/api.js" async="" defer="" gapi_processed="true"></script><script type="text/javascript" src="./YOLOv3 - TensorFlow - HackMD_files/client.js" async="" defer="" gapi_processed="true"></script><iframe id="apiproxyce003cc3251103144994f53a91745a60d9336f180.504091307" name="apiproxyce003cc3251103144994f53a91745a60d9336f180.504091307" src="./YOLOv3 - TensorFlow - HackMD_files/proxy.html" tabindex="-1" aria-hidden="true" style="width: 1px; height: 1px; position: absolute; top: -100px; display: none;"></iframe><div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; min-width: 0px; max-width: none; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: STIXSizeOneSym, sans-serif;"></div></div></body></html>
